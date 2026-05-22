@@ -26,8 +26,15 @@ def get_dataloaders(data_dir="../raw-img", batch_size=32, train_ratio=0.9):
     # 1. Define image preprocessing
     transform = transforms.Compose([
         transforms.Resize((128, 128)),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomRotation(15),
+        transforms.ColorJitter(
+            brightness=0.2,
+            contrast=0.2,
+            saturation=0.2
+        ),
         transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
     ])
 
     # 2. Load datasets from folders
