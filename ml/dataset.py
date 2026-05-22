@@ -21,7 +21,7 @@ def stratified_split(dataset, train_ratio=0.9):
 
     return train_indices, val_indices
 
-def get_dataloaders(data_dir="raw-img", batch_size=32, train_ratio=0.9):
+def get_dataloaders(data_dir="../raw-img", batch_size=32, train_ratio=0.9):
 
     # 1. Define image preprocessing
     transform = transforms.Compose([
