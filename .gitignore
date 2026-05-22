@@ -1,4 +1,6 @@
 # Python environment
-\animal
+.venv/
 
-\raw-img
+raw-img
+ml/models/
+ml/__pycache__/
