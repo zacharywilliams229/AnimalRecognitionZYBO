@@ -77,6 +77,7 @@ if __name__ == "__main__":
 
     image_path = sys.argv[1]
     if not image_path:
+        print("Error: No image path provided.")
         print("Usage: python inference.py <image_path> [model_path]")
         sys.exit(1)
     model_path = sys.argv[2] if len(sys.argv) > 2 else "ml/models/animalcnn.pth"
