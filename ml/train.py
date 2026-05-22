@@ -22,7 +22,7 @@ def train():
     criterion = nn.CrossEntropyLoss()
 
     # 5. Optimizer
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
 
     # 6. Training loop
     epochs = 10
