@@ -25,7 +25,7 @@ def train():
     optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
 
     # 6. Training loop
-    epochs = 10
+    epochs = 25
 
     for epoch in range(epochs):
 
