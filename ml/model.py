@@ -47,6 +47,8 @@ class AnimalCNN(nn.Module):
             num_classes
         )
 
+        self.dropout = nn.Dropout(0.5)
+
     def forward(self, x):
 
         # Conv Block 1
@@ -69,7 +71,7 @@ class AnimalCNN(nn.Module):
 
         # Dense Layers
         x = F.relu(self.fc1(x))
-
+        x = self.dropout(x)
         x = self.fc2(x)
 
         return x
