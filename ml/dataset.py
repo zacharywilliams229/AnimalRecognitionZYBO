@@ -27,7 +27,7 @@ def get_dataloaders(data_dir="../raw-img", batch_size=32, train_ratio=0.9):
     transform = transforms.Compose([
         transforms.Resize((128, 128)),
         transforms.RandomHorizontalFlip(),
-        transforms.RandomRotation(15),
+        transforms.RandomRotation(10),
         transforms.ColorJitter(
             brightness=0.2,
             contrast=0.2,
