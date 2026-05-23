@@ -23,10 +23,17 @@ def train():
     criterion = nn.CrossEntropyLoss()
 
     # 5. Optimizer
-    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
+    optimizer = optim.Adam(model.parameters(), lr=0.0005, weight_decay=1e-4)
 
+    # Scheduler
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='max',
+        factor=0.5,
+        patience=3
+    )
     # 6. Training loop
-    epochs = 25
+    epochs = 30
 
     for epoch in range(epochs):
 
@@ -99,6 +106,9 @@ def train():
         print(f"Train Acc: {train_acc:.2f}%")
         print(f"Val Acc: {val_acc:.2f}%")
         print("-" * 30)
+
+        # Step the scheduler
+        scheduler.step(val_acc)
 
 
     # 8. Save model
