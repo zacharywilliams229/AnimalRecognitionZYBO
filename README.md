@@ -23,7 +23,16 @@ Accuracy During Training:
 - Testing accuracy: 80%
 
 Accuracy during validation (entire dataset):
-
+- butterfly: 94.03% (1986/2112)
+- cat: 82.91% (1383/1668)
+- chicken: 93.03% (2882/3098)
+- cow: 84.41% (1575/1866)
+- dog: 92.10% (4479/4863)
+- elephant: 88.93% (1286/1446)
+- horse: 88.98% (2334/2623)
+- sheep: 86.76% (1579/1820)
+- spider: 96.20% (4638/4821)
+- squirrel: 88.72% (1652/1862)
 - overall: 90.89% (23794/26179)
 
 [Plots for each class](/evaluation_plots_val_acc_model)
