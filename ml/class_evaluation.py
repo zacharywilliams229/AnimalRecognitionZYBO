@@ -1,6 +1,7 @@
 import os
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import sys
 import threading
 
 import matplotlib
@@ -14,6 +15,12 @@ from inference import predict_image
 # CONFIG
 # -----------------------------
 DATASET_DIR = "raw-img"
+
+model_path = sys.argv[1]
+if not model_path:
+    print("Error: No model path provided.")
+    print("Usage: python class_evaluation.py <model_path>")
+    sys.exit(1)
 
 
 # -----------------------------
@@ -69,7 +76,7 @@ with ThreadPoolExecutor(max_workers=max_workers) as executor:
         
         for filename in filenames:
             image_path = os.path.join(class_folder, filename)
-            future = executor.submit(process_image, true_class, image_path, "ml/models/animalcnn_73.pth")
+            future = executor.submit(process_image, true_class, image_path, model_path)
             futures.append(future)
         
         # Collect results as they complete
