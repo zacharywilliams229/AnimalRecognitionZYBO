@@ -8,13 +8,13 @@ from model import AnimalCNN
 
 # Class names in EXACT order used during training
 classes = [
-    "butterfly",
-    "cat",
-    "chicken",
-    "cow",
-    "dog",
-    "elephant",
-    "horse",
+    "dog",#dog
+    "horse",#horse
+    "elephant",#elephant
+    "butterfly", #butterfly
+    "chicken",#chicken
+    "cat", #cat
+    "cow",#cow
     "sheep",
     "spider",
     "squirrel"
@@ -71,6 +71,7 @@ def predict_image(image_path, model_path="ml/models/animalcnn.pth"):
         predicted_class = classes[predicted.item()]
 
     print(f"Prediction: {predicted_class}")
+    return predicted_class
 
 
 if __name__ == "__main__":
