@@ -33,7 +33,7 @@ def train():
         patience=3
     )
     # 6. Training loop
-    epochs = 30
+    epochs = 100
 
     for epoch in range(epochs):
 
@@ -106,6 +106,7 @@ def train():
         print(f"Train Acc: {train_acc:.2f}%")
         print(f"Val Acc: {val_acc:.2f}%")
         print("-" * 30)
+        torch.save(model.state_dict(), f"models/animalcnn_epoch{epoch+1}.pth")  # save after each epoch
 
         # Step the scheduler
         scheduler.step(val_acc)
