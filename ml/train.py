@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from tqdm.auto import tqdm
 
 from model import AnimalCNN
 from dataset import get_dataloaders
@@ -34,8 +35,9 @@ def train():
         running_loss = 0.0
         correct = 0
         total = 0
+        train_pbar = tqdm(train_loader, desc=f"Train {epoch+1}/{epochs}", leave=False)
 
-        for images, labels in train_loader:
+        for images, labels in train_pbar:
 
             # move data to device
             images, labels = images.to(device), labels.to(device)
@@ -62,6 +64,10 @@ def train():
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
 
+            # show batch metrics
+            batch_acc = 100 * (predicted == labels).sum().item() / labels.size(0)
+            train_pbar.set_postfix(loss=f"{loss.item():.4f}", batch_acc=f"{batch_acc:.2f}%")
+
         train_acc = 100 * correct / total
 
         # 7. Validation step
@@ -70,8 +76,9 @@ def train():
         val_total = 0
 
         with torch.no_grad():
+            val_pbar = tqdm(val_loader, desc=f"Val {epoch+1}/{epochs}", leave=False)
 
-            for images, labels in val_loader:
+            for images, labels in val_pbar:
 
                 images, labels = images.to(device), labels.to(device)
 
@@ -81,6 +88,9 @@ def train():
 
                 val_total += labels.size(0)
                 val_correct += (predicted == labels).sum().item()
+
+                batch_acc = 100 * (predicted == labels).sum().item() / labels.size(0)
+                val_pbar.set_postfix(batch_acc=f"{batch_acc:.2f}%")
 
         val_acc = 100 * val_correct / val_total
 
