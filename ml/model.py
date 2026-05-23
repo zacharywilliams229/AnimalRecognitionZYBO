@@ -47,23 +47,27 @@ class AnimalCNN(nn.Module):
             num_classes
         )
 
-        self.dropout = nn.Dropout(0.5)
+        self.dropout = nn.Dropout(0.3)
+
+        self.bn1 = nn.BatchNorm2d(16)
+        self.bn2 = nn.BatchNorm2d(32)
+        self.bn3 = nn.BatchNorm2d(64)
 
     def forward(self, x):
 
         # Conv Block 1
         x = self.pool(
-            F.relu(self.conv1(x))
+            F.relu(self.bn1(self.conv1(x)))
         )
 
         # Conv Block 2
         x = self.pool(
-            F.relu(self.conv2(x))
+            F.relu(self.bn2(self.conv2(x)))
         )
 
         # Conv Block 3
         x = self.pool(
-            F.relu(self.conv3(x))
+            F.relu(self.bn3(self.conv3(x)))
         )
 
         # Flatten
