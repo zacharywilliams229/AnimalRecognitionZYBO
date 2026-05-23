@@ -1,6 +1,10 @@
 import os
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
 
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend
 import matplotlib.pyplot as plt
 
 from inference import predict_image
@@ -32,32 +36,56 @@ prediction_distribution = {
     for class_name in classes
 }
 
+# Lock for thread-safe dictionary updates
+dict_lock = threading.Lock()
+
 
 # -----------------------------
-# EVALUATION LOOP
+# WORKER FUNCTION
 # -----------------------------
-for true_class in classes:
+def process_image(true_class, image_path, model_path):
+    """Process a single image and return results."""
+    try:
+        predicted_class = predict_image(image_path, model_path=model_path)
+        return (true_class, predicted_class, None)
+    except Exception as e:
+        return (true_class, None, str(e))
 
-    class_folder = os.path.join(DATASET_DIR, true_class)
 
-    print(f"Evaluating class: {true_class}")
+# -----------------------------
+# EVALUATION LOOP (MULTITHREADED)
+# -----------------------------
+max_workers = 16  # Adjust based on your system (4-8 recommended for GPU)
 
-    for filename in os.listdir(class_folder):
-
-        image_path = os.path.join(class_folder, filename)
-
-        try:
-            predicted_class = predict_image(image_path, model_path="ml/models/animalcnn_73.pth")
-        except Exception as e:
-            print(f"Could not process {image_path}: {e}")
-            continue
-
-        total_per_class[true_class] += 1
-
-        prediction_distribution[true_class][predicted_class] += 1
-
-        if predicted_class == true_class:
-            correct_per_class[true_class] += 1
+with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    
+    for true_class in classes:
+        class_folder = os.path.join(DATASET_DIR, true_class)
+        print(f"Evaluating class: {true_class}")
+        
+        # Submit all images for this class
+        futures = []
+        filenames = os.listdir(class_folder)
+        
+        for filename in filenames:
+            image_path = os.path.join(class_folder, filename)
+            future = executor.submit(process_image, true_class, image_path, "ml/models/animalcnn_73.pth")
+            futures.append(future)
+        
+        # Collect results as they complete
+        for future in as_completed(futures):
+            true_class_result, predicted_class, error = future.result()
+            
+            if error:
+                print(f"Could not process image: {error}")
+                continue
+            
+            with dict_lock:
+                total_per_class[true_class_result] += 1
+                prediction_distribution[true_class_result][predicted_class] += 1
+                
+                if predicted_class == true_class_result:
+                    correct_per_class[true_class_result] += 1
 
 
 # -----------------------------
@@ -98,4 +126,8 @@ for class_name in classes:
 
     plt.title(f"Predictions for TRUE class: {class_name}")
 
-    plt.show()
+    # Save plot to file instead of showing
+    output_dir = "evaluation_plots"
+    os.makedirs(output_dir, exist_ok=True)
+    plt.savefig(os.path.join(output_dir, f"{class_name}_distribution.png"), dpi=100, bbox_inches='tight')
+    plt.close()
