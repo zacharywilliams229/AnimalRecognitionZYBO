@@ -2,5 +2,4 @@
 .venv/
 
 raw-img
-ml/models/
 ml/__pycache__/
