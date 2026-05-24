@@ -3,3 +3,4 @@
 
 raw-img
 ml/__pycache__/
+ml/exported_models/
